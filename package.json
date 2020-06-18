@@ -7,6 +7,7 @@
     "scripts": {
         "start": "webpack-dev-server --devtool=source-map --mode=development --open --hot --inline",
         "build": "webpack --mode=production --devtool=inline-source-map",
+        "predeploy": "npm run build",
         "deploy": "gh-pages -d dist"
     },
     "author": "",
