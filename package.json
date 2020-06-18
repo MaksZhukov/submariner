@@ -3,9 +3,11 @@
     "version": "1.0.0",
     "description": "",
     "main": "index.js",
+    "homepage": "https://github.com/MaksZhukov/submariner",
     "scripts": {
+        "start": "webpack-dev-server --devtool=source-map --mode=development --open --hot --inline",
         "build": "webpack --mode=production --devtool=inline-source-map",
-        "start": "webpack-dev-server --devtool=source-map --mode=development --open --hot --inline"
+        "deploy": "gh-pages -d dist"
     },
     "author": "",
     "license": "ISC",
