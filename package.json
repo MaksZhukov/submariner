@@ -12,7 +12,8 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "phaser": "^3.23.0"
+        "phaser": "^3.23.0",
+        "phaser-plugin-water-body": "^1.0.0-beta02"
     },
     "devDependencies": {
         "@babel/core": "^7.10.2",

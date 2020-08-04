@@ -1,4 +1,4 @@
-import Phaser from 'phaser';
+import Phaser, { Math } from 'phaser';
 import SubmarineImg from '../assets/images/submarine.png';
 import SunImg from '../assets/images/sun.png';
 import Cloud1Img from '../assets/images/cloud-1.png';
@@ -54,14 +54,39 @@ export class GameScene extends Phaser.Scene {
 
         this.add.image(0, 0, 'sky').setOrigin(0, 0);
         this.add.image(this.game.config.width / 2 + 200, 100, 'sun');
-        this.add.image(this.game.config.width / 2 + 600, 150, 'cloud-1');
-        this.add.image(
-            this.game.config.width / 2,
-            this.game.config.height / 2 - 150,
-            'cloud-2'
-        );
-        this.add.image(this.game.config.width / 2 - 400, 100, 'cloud-3');
+        this.cloud1 = this.add
+            .image(this.game.config.width / 2 + 500, 75, 'cloud-1')
+            .setOrigin(0, 0);
+        this.cloud2 = this.add
+            .image(
+                this.game.config.width / 2,
+                this.game.config.height / 2 - 100,
+                'cloud-2'
+            )
+            .setOrigin(0, 0);
+        this.cloud3 = this.add
+            .image(this.game.config.width / 2 - 600, 25, 'cloud-3')
+            .setOrigin(0, 0);
     }
+
+    moveCloud(cloud, speed) {
+        cloud.x += speed;
+        if (cloud.x > this.game.config.width) {
+            this.resetCloudPosition(cloud);
+        }
+    }
+    moveClouds() {
+        this.moveCloud(this.cloud1, 0.5);
+        this.moveCloud(this.cloud2, 0.5);
+        this.moveCloud(this.cloud3, 0.5);
+    }
+
+    resetCloudPosition(cloud) {
+        console.log(cloud);
+        cloud.x = -cloud.width;
+        cloud.y = Math.Between(50, this.game.config.height / 2 - cloud.height);
+    }
+
     preload() {
         this.load.image('player', SubmarineImg);
         this.load.image('sun', SunImg);
@@ -72,18 +97,14 @@ export class GameScene extends Phaser.Scene {
 
     create() {
         this.isGameStarted = false;
-
         this.createHeaven();
         this.createScore();
-
         this.player = this.physics.add.image(
             this.game.config.width / 2,
             this.game.config.height / 2,
             'player'
         );
-
         this.player.setCollideWorldBounds(true);
-
         this.keyboard = this.input.keyboard.addKeys('LEFT, RIGHT, SPACE');
     }
 
@@ -98,5 +119,6 @@ export class GameScene extends Phaser.Scene {
             this.isGameStarted = true;
             this.physics.world.gravity.set(0, 200);
         }
+        this.moveClouds();
     }
 }
