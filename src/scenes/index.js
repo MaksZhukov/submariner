@@ -4,6 +4,7 @@ import SunImg from '../assets/images/sun.png';
 import Cloud1Img from '../assets/images/cloud-1.png';
 import Cloud2Img from '../assets/images/cloud-2.png';
 import Cloud3Img from '../assets/images/cloud-3.png';
+import WaterPlugin from '../plugins/water';
 
 export class GameScene extends Phaser.Scene {
     createScore() {
@@ -28,7 +29,7 @@ export class GameScene extends Phaser.Scene {
         let canvasTexture = this.textures.createCanvas(
             'sky',
             this.game.config.width,
-            this.game.config.height / 2
+            this.game.config.height / 2 + 8
         );
 
         let graphics = canvasTexture.context.createRadialGradient(
@@ -47,7 +48,7 @@ export class GameScene extends Phaser.Scene {
             0,
             0,
             this.game.config.width,
-            this.game.config.height / 2
+            this.game.config.height / 2 + 8
         );
 
         canvasTexture.refresh();
@@ -60,7 +61,7 @@ export class GameScene extends Phaser.Scene {
         this.cloud2 = this.add
             .image(
                 this.game.config.width / 2,
-                this.game.config.height / 2 - 100,
+                this.game.config.height / 2 - 150,
                 'cloud-2'
             )
             .setOrigin(0, 0);
@@ -68,7 +69,6 @@ export class GameScene extends Phaser.Scene {
             .image(this.game.config.width / 2 - 600, 25, 'cloud-3')
             .setOrigin(0, 0);
     }
-
     moveCloud(cloud, speed) {
         cloud.x += speed;
         if (cloud.x > this.game.config.width) {
@@ -93,18 +93,32 @@ export class GameScene extends Phaser.Scene {
         this.load.image('cloud-1', Cloud1Img);
         this.load.image('cloud-2', Cloud2Img);
         this.load.image('cloud-3', Cloud3Img);
+        this.load.plugin('water', WaterPlugin);
     }
 
     create() {
         this.isGameStarted = false;
         this.createHeaven();
         this.createScore();
+
         this.player = this.physics.add.image(
             this.game.config.width / 2,
             this.game.config.height / 2,
             'player'
         );
         this.player.setCollideWorldBounds(true);
+
+        this.waterTexture = this.textures.createCanvas(
+            'waterTexture',
+            this.game.config.width,
+            this.game.config.height / 2
+        );
+
+        this.plugins.get('water').create(this.waterTexture);
+
+        this.add
+            .image(0, this.game.config.height / 2, 'waterTexture')
+            .setOrigin(0, 0);
         this.keyboard = this.input.keyboard.addKeys('LEFT, RIGHT, SPACE');
     }
 
@@ -119,6 +133,9 @@ export class GameScene extends Phaser.Scene {
             this.isGameStarted = true;
             this.physics.world.gravity.set(0, 200);
         }
+        //this.player.setDepth(1);
+        this.plugins.get('water').update();
+        this.waterTexture.refresh();
         this.moveClouds();
     }
 }
