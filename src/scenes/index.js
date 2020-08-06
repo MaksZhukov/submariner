@@ -82,7 +82,6 @@ export class GameScene extends Phaser.Scene {
     }
 
     resetCloudPosition(cloud) {
-        console.log(cloud);
         cloud.x = -cloud.width;
         cloud.y = Math.Between(50, this.game.config.height / 2 - cloud.height);
     }
@@ -93,7 +92,7 @@ export class GameScene extends Phaser.Scene {
         this.load.image('cloud-1', Cloud1Img);
         this.load.image('cloud-2', Cloud2Img);
         this.load.image('cloud-3', Cloud3Img);
-        this.load.plugin('water', WaterPlugin);
+        this.load.plugin('water', WaterPlugin, true, 'water');
     }
 
     create() {
@@ -101,24 +100,20 @@ export class GameScene extends Phaser.Scene {
         this.createHeaven();
         this.createScore();
 
-        this.player = this.physics.add.image(
-            this.game.config.width / 2,
-            this.game.config.height / 2,
-            'player'
-        );
-        this.player.setCollideWorldBounds(true);
+        this.player = this.physics.add
+            .image(
+                this.game.config.width / 2,
+                this.game.config.height / 2,
+                'player'
+            )
+            .setCollideWorldBounds(true);
 
-        this.waterTexture = this.textures.createCanvas(
-            'waterTexture',
-            this.game.config.width,
-            this.game.config.height / 2
-        );
+        this.plugins
+            .get('water')
+            .create(this.game.config.width, this.game.config.height / 2);
 
-        this.plugins.get('water').create(this.waterTexture);
+        this.add.image(0, this.game.config.height / 2, 'water').setOrigin(0, 0);
 
-        this.add
-            .image(0, this.game.config.height / 2, 'waterTexture')
-            .setOrigin(0, 0);
         this.keyboard = this.input.keyboard.addKeys('LEFT, RIGHT, SPACE');
     }
 
@@ -133,9 +128,9 @@ export class GameScene extends Phaser.Scene {
             this.isGameStarted = true;
             this.physics.world.gravity.set(0, 200);
         }
-        //this.player.setDepth(1);
+
         this.plugins.get('water').update();
-        this.waterTexture.refresh();
+
         this.moveClouds();
     }
 }

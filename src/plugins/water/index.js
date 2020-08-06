@@ -1,9 +1,14 @@
 import Phaser, { Math } from 'phaser';
 
 class WaterPlugin extends Phaser.Plugins.BasePlugin {
-    create(canvas) {
-        this.canvas = canvas;
-        this.context = canvas.getContext();
+    create(width, height) {
+        this.waterTexture = this.game.textures.createCanvas(
+            'water',
+            width,
+            height
+        );
+        this.canvas = this.waterTexture.canvas;
+        this.context = this.waterTexture.context;
 
         //water column every <x> pixels
         this.WAVE_FREQ = 5;
@@ -11,7 +16,7 @@ class WaterPlugin extends Phaser.Plugins.BasePlugin {
         this.WAV_PASS = 6;
 
         //get wave count needed for screen width
-        this.WAVE_COUNT = canvas.width / this.WAVE_FREQ + 1;
+        this.WAVE_COUNT = this.canvas.width / this.WAVE_FREQ + 1;
 
         //start height
         this.HEIGHT = 0;
@@ -47,19 +52,20 @@ class WaterPlugin extends Phaser.Plugins.BasePlugin {
             };
             this.springs[i] = newWave;
         }
-        setInterval(() => {
-            for (let i = 0; i < this.WAVES_FREQUENCY; i++) {
-                this.springs[
-                    Math.Between(0, this.springs.length - 1)
-                ].speed = 2;
-            }
-        }, 100);
+        setInterval(this.generateWaves, 100);
     }
+
+    generateWaves = () => {
+        for (let i = 0; i < this.WAVES_FREQUENCY; i++) {
+            this.springs[Math.Between(0, this.springs.length - 1)].speed = 2;
+        }
+    };
 
     update() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.updateWater();
         this.drawWater();
+        this.waterTexture.refresh();
     }
     updateWater() {
         //update springs
