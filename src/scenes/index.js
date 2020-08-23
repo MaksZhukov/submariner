@@ -1,4 +1,4 @@
-import Phaser, { Math } from "phaser";
+import Phaser, { Math, Curves } from "phaser";
 import SubmarineImg from "../assets/images/submarine.png";
 import SunImg from "../assets/images/sun.png";
 import Cloud1Img from "../assets/images/cloud-1.png";
@@ -88,10 +88,35 @@ export class GameScene extends Phaser.Scene {
                 "ship-2"
             )
             .setOrigin(0, 0);
+
+        this.animateShip(this.ship1, 2500, true);
+        this.animateShip(this.ship2, 3000, false);
     }
 
-    animateShips() {
-        // this.ship1.rotation += 0.01;
+    animateShip(ship, duration, isAnimateLeftToRight) {
+        let path = { t: 0, vec: new Math.Vector2() };
+
+        let stepX = isAnimateLeftToRight ? 5 : -5;
+        let stepY = 5;
+
+        let linePath = new Curves.Spline([
+            new Math.Vector2(ship.x, ship.y),
+            new Math.Vector2(ship.x + stepX, ship.y + stepY),
+            new Math.Vector2(ship.x + stepX * 2, ship.y),
+        ]);
+
+        this.tweens.add({
+            targets: path,
+            t: 1,
+            duration,
+            repeat: -1,
+            yoyo: true,
+            onUpdate: () => {
+                let p = linePath.getPoint(path.t, path.vec);
+                ship.x = p.x;
+                ship.y = p.y;
+            },
+        });
     }
     moveCloud(cloud, speed) {
         cloud.x += speed;
@@ -159,6 +184,5 @@ export class GameScene extends Phaser.Scene {
         this.plugins.get("water").update();
 
         this.moveClouds();
-        this.animateShips();
     }
 }
