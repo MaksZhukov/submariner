@@ -9,6 +9,50 @@ import Ship2Img from "../assets/images/ship-2.png";
 import WaterPlugin from "../plugins/water";
 
 export class GameScene extends Phaser.Scene {
+    createStartPanel() {
+        let widthPanel = 300;
+        let heightPanel = 150;
+        let cornerRadius = 20;
+
+        let panel = this.textures.createCanvas(
+            "startPanel",
+            widthPanel,
+            heightPanel
+        );
+
+        let context = panel.getContext();
+
+        context.lineJoin = "round";
+        context.lineWidth = cornerRadius;
+        context.strokeStyle = "#6397d675";
+        context.strokeRect(
+            cornerRadius / 2,
+            cornerRadius / 2,
+            widthPanel - cornerRadius,
+            heightPanel - cornerRadius
+        );
+        context.fillStyle = "#6397d6";
+        context.fillRect(
+            cornerRadius / 2,
+            cornerRadius / 2,
+            widthPanel - cornerRadius,
+            heightPanel - cornerRadius
+        );
+
+        context.fillStyle = "#fff";
+        context.font = "24px Freckle Face";
+        context.fillText("Press space to start", 50, heightPanel / 2 + 10);
+
+        panel.refresh();
+
+        this.startPanel = this.add
+            .image(
+                this.game.config.width / 2,
+                this.game.config.height / 2,
+                "startPanel"
+            )
+            .setDepth(1);
+    }
     createScore() {
         this.score = this.add.text(15, 15, "SCORE \n00000");
         this.score.setFontFamily("Freckle Face");
@@ -151,6 +195,7 @@ export class GameScene extends Phaser.Scene {
         this.createHeaven();
         this.createScore();
         this.createShips();
+        this.createStartPanel();
 
         this.player = this.physics.add
             .image(
@@ -178,6 +223,7 @@ export class GameScene extends Phaser.Scene {
         }
         if (!this.isGameStarted && this.keyboard.SPACE.isDown) {
             this.isGameStarted = true;
+            this.startPanel.destroy();
             this.physics.world.gravity.set(0, 200);
         }
 
