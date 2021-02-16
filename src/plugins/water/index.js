@@ -2,11 +2,8 @@ import Phaser, { Math } from 'phaser';
 
 class WaterPlugin extends Phaser.Plugins.BasePlugin {
     create(width, height) {
-        this.waterTexture = this.game.textures.createCanvas(
-            'water',
-            width,
-            height
-        );
+        this.waterTexture = this.game.textures.createCanvas('water', width, height);
+
         this.canvas = this.waterTexture.canvas;
         this.context = this.waterTexture.context;
 
@@ -84,15 +81,11 @@ class WaterPlugin extends Phaser.Plugins.BasePlugin {
             //create arrays for springs to the left and right of each spring/column
             for (var i = 0; i < this.springs.length; i++) {
                 if (i > 0) {
-                    leftDeltas[i] =
-                        this.SPREAD *
-                        (this.springs[i].height - this.springs[i - 1].height);
+                    leftDeltas[i] = this.SPREAD * (this.springs[i].height - this.springs[i - 1].height);
                     this.springs[i - 1].speed += leftDeltas[i];
                 }
                 if (i < this.springs.length - 1) {
-                    rightDeltas[i] =
-                        this.SPREAD *
-                        (this.springs[i].height - this.springs[i + 1].height);
+                    rightDeltas[i] = this.SPREAD * (this.springs[i].height - this.springs[i + 1].height);
                     this.springs[i + 1].speed += rightDeltas[i];
                 }
             }
@@ -100,8 +93,7 @@ class WaterPlugin extends Phaser.Plugins.BasePlugin {
             //update the position of each spring/column based on the sibling/delta arrays
             for (var i = 0; i < this.springs.length; i++) {
                 if (i > 0) this.springs[i - 1].height += leftDeltas[i];
-                if (i < this.springs.length - 1)
-                    this.springs[i + 1].height += rightDeltas[i];
+                if (i < this.springs.length - 1) this.springs[i + 1].height += rightDeltas[i];
             }
         }
     }
@@ -118,12 +110,7 @@ class WaterPlugin extends Phaser.Plugins.BasePlugin {
         let col1 = '#77d7ffe6';
         let col2 = '#00b3ff80';
 
-        let grd = this.context.createLinearGradient(
-            0,
-            vOne.height,
-            0,
-            this.canvas.height
-        );
+        let grd = this.context.createLinearGradient(0, vOne.height, 0, this.canvas.height);
         grd.addColorStop(0.3, col1);
         grd.addColorStop(1, col2);
 
